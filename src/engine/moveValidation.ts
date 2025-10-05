@@ -310,19 +310,31 @@ function generatePotentialMoves(piece: Piece, boards: Board[]): Position[] {
   return moves;
 }
 
-function generatePawnMoves(pawn: Piece, boards: Board[], moves: Position[]): void { // eslint-disable-line @typescript-eslint/no-unused-vars
+function generatePawnMoves(pawn: Piece, boards: Board[], moves: Position[]): void {
   const direction = pawn.color === 'white' ? 1 : -1;
   const from = pawn.position;
 
-  // Forward moves
-  const oneForward: Position = { ...from, rank: from.rank + direction };
-  if (positionExistsOnBoard(oneForward, boards)) {
-    moves.push(oneForward);
-  }
+  // Forward moves (check all levels at target rank)
+  // Pawns can advance forward to any valid square at the next rank,
+  // potentially crossing between main boards
+  for (const board of boards) {
+    const oneForward: Position = {
+      file: from.file,
+      rank: from.rank + direction,
+      level: board.level,
+    };
+    if (positionExistsOnBoard(oneForward, boards)) {
+      moves.push(oneForward);
+    }
 
-  const twoForward: Position = { ...from, rank: from.rank + 2 * direction };
-  if (positionExistsOnBoard(twoForward, boards)) {
-    moves.push(twoForward);
+    const twoForward: Position = {
+      file: from.file,
+      rank: from.rank + 2 * direction,
+      level: board.level,
+    };
+    if (positionExistsOnBoard(twoForward, boards)) {
+      moves.push(twoForward);
+    }
   }
 
   // Diagonal captures (all levels)
