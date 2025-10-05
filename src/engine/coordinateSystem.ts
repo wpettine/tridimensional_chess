@@ -14,9 +14,15 @@
  * Piece Placement Convention:
  * - Back rank (y=0 for White, y=3 for Black on main boards): Major pieces (Knights, Bishops, Rooks, Queens, Kings)
  * - Front rank (y=1 for White, y=2 for Black on main boards): Pawns
+ *
+ * Z-axis Spacing:
+ * - Board vertical spacing is now configurable via theme.ts (SPACING_CONFIG)
+ * - Main boards: separated by mainBoardZSpacing (default: 4 units)
+ * - Attack boards: positioned attackBoardZOffset above their main board (default: 2 units)
  */
 
 import type { Position } from './types';
+import { SPACING_CONFIG } from '../config/theme';
 
 /**
  * Board definition with explicit world positioning
@@ -35,6 +41,15 @@ export interface BoardDefinition {
 }
 
 /**
+ * Calculate Z-positions based on theme spacing configuration
+ */
+const Z_WHITE_MAIN = 0; // Base level
+const Z_NEUTRAL_MAIN = Z_WHITE_MAIN + SPACING_CONFIG.mainBoardZSpacing;
+const Z_BLACK_MAIN = Z_WHITE_MAIN + (2 * SPACING_CONFIG.mainBoardZSpacing);
+const Z_WHITE_ATTACK = Z_WHITE_MAIN + SPACING_CONFIG.attackBoardZOffset;
+const Z_BLACK_ATTACK = Z_BLACK_MAIN + SPACING_CONFIG.attackBoardZOffset;
+
+/**
  * All board definitions with explicit positioning
  * World coordinates: Each square is 2x2 units in world space
  *
@@ -42,6 +57,10 @@ export interface BoardDefinition {
  * - Each 4x4 board is 8 units deep (4 rows × 2 units per row)
  * - Y-offset of 4 units creates 50% overlap (2 rows × 2 units = 4 units)
  * - White center: Y=0, Neutral center: Y=4, Black center: Y=8
+ *
+ * Z-axis spacing is configurable via theme.ts:
+ * - mainBoardZSpacing controls distance between main boards
+ * - attackBoardZOffset controls height of attack boards above main boards
  */
 export const BOARD_DEFINITIONS: Record<string, BoardDefinition> = {
   // WHITE MAIN BOARD - Bottom level, centered at Y=0
@@ -49,7 +68,7 @@ export const BOARD_DEFINITIONS: Record<string, BoardDefinition> = {
     id: 'WL',
     type: 'main',
     size: { width: 4, height: 4 },
-    worldPosition: { x: -4, y: -4, z: 0 }, // Bottom-left at Y=-4, extends to Y=4 (center Y=0)
+    worldPosition: { x: -4, y: -4, z: Z_WHITE_MAIN }, // Bottom-left at Y=-4, extends to Y=4 (center Y=0)
     globalFileRange: { min: 1, max: 4 }, // files a-d
     globalRankRange: { min: 2, max: 5 }, // ranks 2-5
   },
@@ -59,7 +78,7 @@ export const BOARD_DEFINITIONS: Record<string, BoardDefinition> = {
     id: 'NL',
     type: 'main',
     size: { width: 4, height: 4 },
-    worldPosition: { x: -4, y: 0, z: 4 }, // Bottom-left at Y=0, extends to Y=8 (center Y=4)
+    worldPosition: { x: -4, y: 0, z: Z_NEUTRAL_MAIN }, // Z dynamically calculated from spacing
     globalFileRange: { min: 1, max: 4 }, // files a-d
     globalRankRange: { min: 4, max: 7 }, // ranks 4-7
   },
@@ -69,7 +88,7 @@ export const BOARD_DEFINITIONS: Record<string, BoardDefinition> = {
     id: 'BL',
     type: 'main',
     size: { width: 4, height: 4 },
-    worldPosition: { x: -4, y: 4, z: 8 }, // Bottom-left at Y=4, extends to Y=12 (center Y=8)
+    worldPosition: { x: -4, y: 4, z: Z_BLACK_MAIN }, // Z dynamically calculated from spacing
     globalFileRange: { min: 1, max: 4 }, // files a-d
     globalRankRange: { min: 6, max: 9 }, // ranks 6-9
   },
@@ -80,7 +99,7 @@ export const BOARD_DEFINITIONS: Record<string, BoardDefinition> = {
     id: 'WQL',
     type: 'attack',
     size: { width: 2, height: 2 },
-    worldPosition: { x: -6, y: -6, z: 2 }, // Bottom-left corner, extends behind White
+    worldPosition: { x: -6, y: -6, z: Z_WHITE_ATTACK }, // Z dynamically calculated from offset
     globalFileRange: { min: 0, max: 1 }, // files z-a
     globalRankRange: { min: 0, max: 1 }, // ranks 0-1
   },
@@ -91,7 +110,7 @@ export const BOARD_DEFINITIONS: Record<string, BoardDefinition> = {
     id: 'WKL',
     type: 'attack',
     size: { width: 2, height: 2 },
-    worldPosition: { x: 2, y: -6, z: 2 }, // Bottom-left corner, extends behind White
+    worldPosition: { x: 2, y: -6, z: Z_WHITE_ATTACK }, // Z dynamically calculated from offset
     globalFileRange: { min: 3, max: 4 }, // files d-e
     globalRankRange: { min: 0, max: 1 }, // ranks 0-1
   },
@@ -102,7 +121,7 @@ export const BOARD_DEFINITIONS: Record<string, BoardDefinition> = {
     id: 'BQL',
     type: 'attack',
     size: { width: 2, height: 2 },
-    worldPosition: { x: -6, y: 10, z: 10 }, // Bottom-left corner, extends behind Black
+    worldPosition: { x: -6, y: 10, z: Z_BLACK_ATTACK }, // Z dynamically calculated from offset
     globalFileRange: { min: 0, max: 1 }, // files z-a
     globalRankRange: { min: 9, max: 10 }, // ranks 9-10
   },
@@ -113,7 +132,7 @@ export const BOARD_DEFINITIONS: Record<string, BoardDefinition> = {
     id: 'BKL',
     type: 'attack',
     size: { width: 2, height: 2 },
-    worldPosition: { x: 2, y: 10, z: 10 }, // Bottom-left corner, extends behind Black
+    worldPosition: { x: 2, y: 10, z: Z_BLACK_ATTACK }, // Z dynamically calculated from offset
     globalFileRange: { min: 3, max: 4 }, // files d-e
     globalRankRange: { min: 9, max: 10 }, // ranks 9-10
   },

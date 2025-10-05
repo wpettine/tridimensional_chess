@@ -4,6 +4,7 @@
 
 import type { Position, Board, Piece, AttackBoardPosition } from './types';
 import { LEVEL_IDS } from './constants';
+import { BOARD_DEFINITIONS } from './coordinateSystem';
 
 /**
  * Check if two positions are equal
@@ -22,15 +23,17 @@ export function isValidGridPosition(file: number, rank: number): boolean {
 /**
  * Check if a position exists on any board
  */
-export function positionExistsOnBoard(position: Position, boards: Board[]): boolean {
-  const board = boards.find((b) => b.level === position.level);
-  if (!board) return false;
+export function positionExistsOnBoard(position: Position, boards: Board[]): boolean { // eslint-disable-line @typescript-eslint/no-unused-vars
+  const boardDef = BOARD_DEFINITIONS[position.level];
+  if (!boardDef) return false;
 
-  if (board.type === 'main') {
-    return isOnMainBoard(position, board.level);
-  } else {
-    return isOnAttackBoard(position, board);
-  }
+  // Check if position is within board's global file and rank ranges
+  return (
+    position.file >= boardDef.globalFileRange.min &&
+    position.file <= boardDef.globalFileRange.max &&
+    position.rank >= boardDef.globalRankRange.min &&
+    position.rank <= boardDef.globalRankRange.max
+  );
 }
 
 /**

@@ -4,6 +4,7 @@
 
 import { BOARD_DEFINITIONS, type BoardDefinition } from '../../engine/coordinateSystem';
 import { LEVEL_IDS } from '../../engine/constants';
+import { BOARD_THEME } from '../../config/theme';
 
 const SQUARE_SIZE = 2;
 
@@ -16,14 +17,14 @@ function SingleBoard({ definition }: SingleBoardProps) {
 
   // Board colors
   const getPlatformColor = () => {
-    if (type === 'attack') return '#D4AF37'; // Gold for attack boards
+    if (type === 'attack') return BOARD_THEME.platforms.attack;
     switch (id) {
       case LEVEL_IDS.WHITE_MAIN:
-        return '#8B7355';
+        return BOARD_THEME.platforms.whiteMain;
       case LEVEL_IDS.NEUTRAL_MAIN:
-        return '#A0826D';
+        return BOARD_THEME.platforms.neutralMain;
       case LEVEL_IDS.BLACK_MAIN:
-        return '#6F5645';
+        return BOARD_THEME.platforms.blackMain;
       default:
         return '#888888';
     }
@@ -32,13 +33,13 @@ function SingleBoard({ definition }: SingleBoardProps) {
   const getLabelColor = () => {
     switch (id) {
       case LEVEL_IDS.WHITE_MAIN:
-        return '#ffffff';
+        return BOARD_THEME.labels.white;
       case LEVEL_IDS.NEUTRAL_MAIN:
-        return '#888888';
+        return BOARD_THEME.labels.neutral;
       case LEVEL_IDS.BLACK_MAIN:
-        return '#000000';
+        return BOARD_THEME.labels.black;
       default:
-        return '#D4AF37'; // Gold for attack boards
+        return BOARD_THEME.labels.attack;
     }
   };
 
@@ -58,10 +59,10 @@ function SingleBoard({ definition }: SingleBoardProps) {
         receiveShadow
         position={[boardCenterX, boardCenterY, boardCenterZ - 0.15]}
       >
-        <boxGeometry args={[boardWidth - 0.2, boardHeight - 0.2, 0.2]} />
+        <boxGeometry args={[boardWidth - BOARD_THEME.platforms.gap, boardHeight - BOARD_THEME.platforms.gap, BOARD_THEME.platforms.thickness]} />
         <meshStandardMaterial
           color={getPlatformColor()}
-          opacity={0.7}
+          opacity={BOARD_THEME.platforms.opacity}
           transparent
         />
       </mesh>
@@ -80,10 +81,10 @@ function SingleBoard({ definition }: SingleBoardProps) {
               position={[squareX, squareY, boardCenterZ]}
               receiveShadow
             >
-              <boxGeometry args={[SQUARE_SIZE - 0.1, SQUARE_SIZE - 0.1, 0.1]} />
+              <boxGeometry args={[SQUARE_SIZE - BOARD_THEME.squares.gap, SQUARE_SIZE - BOARD_THEME.squares.gap, 0.1]} />
               <meshStandardMaterial
-                color={isLight ? '#F0D9B5' : '#B58863'}
-                opacity={0.75}
+                color={isLight ? BOARD_THEME.squares.light : BOARD_THEME.squares.dark}
+                opacity={BOARD_THEME.squares.opacity}
                 transparent
               />
             </mesh>
@@ -91,20 +92,14 @@ function SingleBoard({ definition }: SingleBoardProps) {
         })
       )}
 
-      {/* Level label */}
-      <mesh position={[boardCenterX + boardWidth / 2 + 1, boardCenterY, boardCenterZ]}>
-        <boxGeometry args={[0.5, 0.5, 0.5]} />
-        <meshStandardMaterial color={getLabelColor()} />
-      </mesh>
-
       {/* Support pillars for attack boards */}
       {type === 'attack' && (
         <mesh
-          position={[boardCenterX, boardCenterY, boardCenterZ - 1]}
+          position={[boardCenterX, boardCenterY, boardCenterZ - BOARD_THEME.spacing.attackBoardZOffset / 2]}
           rotation={[Math.PI / 2, 0, 0]}
         >
-          <cylinderGeometry args={[0.1, 0.1, 2]} />
-          <meshStandardMaterial color="#C0C0C0" />
+          <cylinderGeometry args={[BOARD_THEME.pillars.radius, BOARD_THEME.pillars.radius, BOARD_THEME.spacing.attackBoardZOffset]} />
+          <meshStandardMaterial color={BOARD_THEME.pillars.color} />
         </mesh>
       )}
     </group>

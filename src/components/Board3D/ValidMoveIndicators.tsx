@@ -7,6 +7,7 @@ import { useGameStore } from '../../store/gameStore';
 import type { Position } from '../../engine/types';
 import { globalToWorld } from '../../engine/coordinateSystem';
 import { getPieceAtPosition } from '../../engine/boardUtils';
+import { BOARD_THEME } from '../../config/theme';
 
 function ValidMoveIndicator({ position }: { position: Position }) {
   const movePiece = useGameStore((state) => state.movePiece);
@@ -40,10 +41,10 @@ function ValidMoveIndicator({ position }: { position: Position }) {
     >
       <ringGeometry args={[0.5, 0.7, 32]} />
       <meshStandardMaterial
-        color={isCapture ? '#FF4444' : '#44FF44'}
+        color={isCapture ? BOARD_THEME.moves.capture : BOARD_THEME.moves.valid}
         transparent
-        opacity={0.6}
-        emissive={isCapture ? '#FF0000' : '#00FF00'}
+        opacity={BOARD_THEME.moves.opacity}
+        emissive={isCapture ? BOARD_THEME.moves.capture : BOARD_THEME.moves.valid}
         emissiveIntensity={0.3}
       />
     </mesh>
