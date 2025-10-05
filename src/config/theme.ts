@@ -143,8 +143,8 @@ const CLASSIC_THEME: BoardTheme = {
       fallback: '#FFFFFF',
     },
     black: {
-      primary: '#2a2a2a',
-      fallback: '#1a1a1a',
+      primary: '#5A5A5A',
+      fallback: '#4A4A4A',
     },
     selection: {
       color: '#FFD700',
@@ -243,8 +243,8 @@ const STAR_TREK_THEME: BoardTheme = {
       accent: '#C0C0C0', // Silver accent
     },
     black: {
-      primary: '#2A2A2A', // Matte charcoal black
-      fallback: '#2A2A2A',
+      primary: '#5A5A5A', // Medium gray for visibility
+      fallback: '#5A5A5A',
       accent: '#C0C0C0', // Chrome accent
     },
     selection: {
