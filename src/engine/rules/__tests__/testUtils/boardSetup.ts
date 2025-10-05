@@ -63,6 +63,8 @@ export function placePieces(pieces: Piece[]): Piece[] {
 
 /**
  * Create a position from algebraic notation (e.g., "c1W" or "a8BQL")
+ * Notation uses short codes: W, N, B for main boards
+ * But internally we use WL, NL, BL for board IDs
  */
 export function parsePosition(notation: string): Position {
   const match = notation.match(/^([zabcde])(\d+)(\w+)$/);
@@ -73,7 +75,20 @@ export function parsePosition(notation: string): Position {
   const files = ['z', 'a', 'b', 'c', 'd', 'e'];
   const file = files.indexOf(match[1]);
   const rank = parseInt(match[2], 10);
-  const level = match[3];
+  let level = match[3];
+
+  // Convert short notation to full board IDs
+  const levelMap: Record<string, string> = {
+    'W': 'WL',
+    'N': 'NL',
+    'B': 'BL',
+    'WQL': 'WQL',
+    'WKL': 'WKL',
+    'BQL': 'BQL',
+    'BKL': 'BKL',
+  };
+
+  level = levelMap[level] || level;
 
   if (file === -1) {
     throw new Error(`Invalid file in notation: ${notation}`);

@@ -79,6 +79,8 @@ export function validateMove(
   }
 
   // Check vertical column blocking (except for knights)
+  // Note: Vertical movement without horizontal displacement is not allowed
+  // per Meder's Rules Section 2.2
   if (piece.type !== 'knight') {
     if (
       piece.position.file === to.file &&
@@ -86,11 +88,6 @@ export function validateMove(
       piece.position.level !== to.level
     ) {
       return { valid: false, reason: 'Cannot move vertically without horizontal displacement' };
-    }
-
-    // Check if path crosses a blocked vertical column
-    if (isVerticalColumnBlocked(to.file, to.rank, pieces, piece)) {
-      return { valid: false, reason: 'Vertical column is blocked' };
     }
   }
 
